@@ -14,13 +14,12 @@
      limitations under the License.
 -->
 
-<resources>
-    <string name="app_name">DSPManager</string>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="select_configuration_title">Seleziona configurazione da modificare</string>
     <string name="headset_title">Cuffie</string>
     <string name="speaker_title">Altoparlante telefono</string>
     <string name="bluetooth_title">Dispositivo bluetooth</string>
-    <string name="wm8994_title">WM8994</string>
     <string name="audio_effects">Effetti audio</string>
     <string name="pref_unavailable">Funzionalità non disponibile sul tuo dispositivo</string>
     <string name="dsp_settings_headset">Impostazioni DSP - Cuffie</string>
@@ -104,9 +103,9 @@
     <string name="pref_wm8994_fll_tuning_title">Regola clock audio</string>
     <string name="pref_wm8994_fll_tuning_summary">Usa il clock regolato della sorgente audio WM8994 &#8212; Migliora la qualità del suono</string>
     <string name="help_title">Manuale d\'uso</string>
-    <string name="help_text"><b>Che cos\'è DSPManager?</b>
+    <string name="help_text"><b>Che cos\'è DSP Manager?</b>
 \n
-\nDSPManager è un\'applicazione per la regolazione dell\'audio in uscita
+\nDSP Manager è un\'applicazione per la regolazione dell\'audio in uscita
 <i>DSP</i> sta per Digital Signal Processing, mentre <i>Manager</i> si riferisce
 al fatto che l\'elaborazione del segnale digitale non viene effettivamente
 eseguita all\'interno della stessa applicazione, il gestore può solo attivarla
@@ -117,7 +116,7 @@ Android, vale a dire la maggior parte dei lettori musicali.
 \n
 \nL\'elaborazione audio CyanogenMod supporta tre diverse categorie di uscita:
 auricolare, vivavoce e auricolare bluetooth. Vi è un pannello di configurazione
-per ciascuna categoria di uscita. La filosofia di DSPManager è quella di
+per ciascuna categoria di uscita. La filosofia di DSP Manager è quella di
 correggere le particolari carenze di ogni uscita audio per raggiungere la più
 ottimale esperienza d\'ascolto.
 \n
