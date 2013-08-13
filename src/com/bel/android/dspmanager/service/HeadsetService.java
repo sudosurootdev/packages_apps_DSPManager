@@ -45,7 +45,7 @@ public class HeadsetService extends Service {
 	 */
 	protected static class EffectSet {
 		private static final UUID EFFECT_TYPE_VOLUME = UUID
-				.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
+				.fromString("119341a0-8469-11df-81f9-0002a5d5c51b");
 		private static final UUID EFFECT_TYPE_NULL = UUID
 				.fromString("ec7178ec-e5e1-4432-a3f4-4657e6795210");
 
