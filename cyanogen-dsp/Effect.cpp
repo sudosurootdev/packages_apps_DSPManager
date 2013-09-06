@@ -20,7 +20,7 @@
 #include "Effect.h"
 
 Effect::Effect()
-    : mSamplingRate(44100)
+    : mSamplingRate(96000)
 {
 }
 

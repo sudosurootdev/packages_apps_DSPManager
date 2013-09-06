@@ -186,7 +186,7 @@ int32_t EffectCompression::process(audio_buffer_t *in, audio_buffer_t *out)
          * However, if the input buffer would happen to be longer than
          * this, I'll just make sure that I am done with the adjustment
          * by the end of it. */
-        int32_t adjLen = mSamplingRate / 40; // in practice, about 1100 frames
+        int32_t adjLen = mSamplingRate / 20; // in practice, about 1100 frames
         /* This formulation results in piecewise linear approximation of
          * exponential because the rate of adjustment decreases from granule
          * to granule. */

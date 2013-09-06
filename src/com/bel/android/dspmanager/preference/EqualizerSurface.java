@@ -20,7 +20,7 @@ import com.bel.android.dspmanager.R;
 public class EqualizerSurface extends SurfaceView {
 	private static int MIN_FREQ = 10;
 	private static int MAX_FREQ = 21000;
-	private static int SAMPLING_RATE = 44100;
+	private static int SAMPLING_RATE = 96000;
 	public static int MIN_DB = -12;
 	public static int MAX_DB = 12;
 
