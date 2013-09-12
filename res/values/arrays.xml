@@ -94,27 +94,39 @@
     <item>custom</item>                       <!-- Custom -->
   </string-array>
 
-  <string-array name="compression_modes">
+  <string-array name="bassboost_modes">
     <item>Slight</item>
+    <item>Weak</item>
+    <item>Enhanced</item>
     <item>Moderate</item>
     <item>Extreme</item>
+    <item>Boom Boom Boom</item>
   </string-array>
 
   <string-array name="compression_modes_values" translatable="false">
     <item>50</item>
     <item>100</item>
+    <item>150</item>
+    <item>200</item>
+    <item>250</item>
     <item>300</item>
   </string-array>
 
-  <string-array name="bassboost_modes">
+  <string-array name="compression_modes">
     <item>Slight</item>
+    <item>Weak</item>
+    <item>Enhanced</item>
     <item>Moderate</item>
     <item>Extreme</item>
+    <item>Diamond</item>
   </string-array>
 
   <string-array name="bassboost_modes_values" translatable="false">
     <item>0</item>
-    <item>500</item>
+    <item>200</item>
+    <item>400</item>
+    <item>600</item>
+    <item>800</item>
     <item>1000</item>
   </string-array>
 
