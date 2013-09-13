@@ -321,5 +321,4 @@ public class EqualizerSurface extends SurfaceView {
 
         return idx;
     }
->>>>>>> cm
 }
