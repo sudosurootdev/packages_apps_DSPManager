@@ -39,6 +39,13 @@
             android:defaultValue="0"
             android:title="@string/pref_effect_title"
             android:entryValues="@array/bassboost_modes_values" />
+        <com.bel.android.dspmanager.preference.SummariedListPreference
+            android:key="dsp.bass.freq"
+            android:entries="@array/bassboost_freqs"
+            android:dialogTitle="@string/dialog_effect"
+            android:defaultValue="55"
+            android:title="@string/pref_effect_freq_title"
+            android:entryValues="@array/bassboost_freqs_values"/>
     </PreferenceCategory>
 
     <PreferenceCategory
