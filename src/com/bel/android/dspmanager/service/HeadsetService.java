@@ -276,39 +276,54 @@ public class HeadsetService extends Service {
     }
 
     private void updateDsp(SharedPreferences prefs, EffectSet session) {
-        session.mCompression.setEnabled(prefs.getBoolean("dsp.compression.enable", false));
-        session.mCompression.setParameter(session.mCompression.intToByteArray(0),
-                session.mCompression.shortToByteArray(
-                        Short.valueOf(prefs.getString("dsp.compression.mode", "0"))));
+        try {
+            session.mCompression.setEnabled(prefs.getBoolean("dsp.compression.enable", false));
+            session.mCompression.setParameter(session.mCompression.intToByteArray(0),
+                    session.mCompression.shortToByteArray(
+                            Short.valueOf(prefs.getString("dsp.compression.mode", "0"))));
+        } catch (Exception e) {
+            Log.e(TAG, "Error enabling compression!", e);
+        }
 
-        session.mBassBoost.setEnabled(prefs.getBoolean("dsp.bass.enable", false));
-        session.mBassBoost.setStrength(Short.valueOf(prefs.getString("dsp.bass.mode", "0")));
+        try {
+            session.mBassBoost.setEnabled(prefs.getBoolean("dsp.bass.enable", false));
+            session.mBassBoost.setStrength(Short.valueOf(prefs.getString("dsp.bass.mode", "0")));
+        } catch (Exception e) {
+            Log.e(TAG, "Error enabling bass boost!", e);
+        }
 
+        try {
+            session.mEqualizer.setEnabled(prefs.getBoolean("dsp.tone.enable", false));
+            float[] equalizerLevels;
+            if (mOverriddenEqualizerLevels != null) {
+                equalizerLevels = mOverriddenEqualizerLevels;
+            } else {
+                /* Equalizer state is in a single string preference with all values separated by ; */
+                String[] levels = prefs.getString("dsp.tone.eq.custom", "0;0;0;0;0").split(";");
+                equalizerLevels = new float[levels.length];
+                for (int i = 0; i < levels.length; i++) {
+                    equalizerLevels[i] = Float.valueOf(levels[i]);
+                }
+            }
+
+            for (short i = 0; i < equalizerLevels.length; i ++) {
+                session.mEqualizer.setBandLevel(i, (short) Math.round(equalizerLevels[i] * 100));
+            }
+            session.mEqualizer.setParameter(session.mEqualizer.intToByteArray(1000),
+                    session.mEqualizer.shortToByteArray(
+                            Short.valueOf(prefs.getString("dsp.tone.loudness", "10000"))));
+        } catch (Exception e) {
+            Log.e(TAG, "Error enabling equalizer!", e);
+        }
         session.mBassBoost.setCenterFrequency(Short.valueOf(prefs.getString("dsp.bass.freq", "55")));
 
-        session.mEqualizer.setEnabled(prefs.getBoolean("dsp.tone.enable", false));
-        float[] equalizerLevels;
-        if (mOverriddenEqualizerLevels != null) {
-            equalizerLevels = mOverriddenEqualizerLevels;
-        } else {
-            /* Equalizer state is in a single string preference with all values separated by ; */
-            String[] levels = prefs.getString("dsp.tone.eq.custom", "0;0;0;0;0").split(";");
-            equalizerLevels = new float[levels.length];
-            for (int i = 0; i < levels.length; i++) {
-                equalizerLevels[i] = Float.valueOf(levels[i]);
-            }
+        try {
+            session.mVirtualizer.setEnabled(prefs.getBoolean("dsp.headphone.enable", false));
+            session.mVirtualizer.setStrength(
+                    Short.valueOf(prefs.getString("dsp.headphone.mode", "0")));
+        } catch (Exception e) {
+            Log.e(TAG, "Error enabling virtualizer!");
         }
-
-        for (short i = 0; i < equalizerLevels.length; i ++) {
-            session.mEqualizer.setBandLevel(i, (short) Math.round(equalizerLevels[i] * 100));
-        }
-        session.mEqualizer.setParameter(session.mEqualizer.intToByteArray(1000),
-                session.mEqualizer.shortToByteArray(
-                        Short.valueOf(prefs.getString("dsp.tone.loudness", "10000"))));
-
-        session.mVirtualizer.setEnabled(prefs.getBoolean("dsp.headphone.enable", false));
-        session.mVirtualizer.setStrength(
-                Short.valueOf(prefs.getString("dsp.headphone.mode", "0")));
         session.mStereoWide.setEnabled(prefs.getBoolean("dsp.stereowide.enable", false));
         session.mStereoWide.setStrength(Short.valueOf(prefs.getString("dsp.stereowide.mode", "0")));
     }
