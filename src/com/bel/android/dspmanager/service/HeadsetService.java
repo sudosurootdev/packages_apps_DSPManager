@@ -43,6 +43,8 @@ public class HeadsetService extends Service {
      * @author alankila
      */
     protected static class EffectSet {
+        private static final String TAG = "DSPManager.HeadsetService.EffectSet";
+
         private static final UUID EFFECT_TYPE_VOLUME = UUID
                 .fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
         private static final UUID EFFECT_TYPE_NULL = UUID
@@ -70,29 +72,66 @@ public class HeadsetService extends Service {
         private final StereoWide mStereoWide;
 
         protected EffectSet(int sessionId) {
+            AudioEffect comp = null;
+            Equalizer eq = null;
+            BassBoost bass = null;
+            Virtualizer virt = null;
+            StereoWide wide = null;
+
             try {
                 /*
                  * AudioEffect constructor is not part of SDK. We use reflection
                  * to access it.
                  */
-                mCompression = AudioEffect.class.getConstructor(UUID.class,
+                comp = AudioEffect.class.getConstructor(UUID.class,
                         UUID.class, Integer.TYPE, Integer.TYPE).newInstance(
                         EFFECT_TYPE_VOLUME, EFFECT_TYPE_NULL, 0, sessionId);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                Log.e(TAG, "Error initializing Compression\n"+e);
             }
-            mEqualizer = new Equalizer(0, sessionId);
-            mBassBoost = new BassBoost(0, sessionId);
-            mVirtualizer = new Virtualizer(0, sessionId);
-            mStereoWide = new StereoWide(0, sessionId);
+
+            try {
+                eq = new Equalizer(0, sessionId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing EQ\n"+e);
+            }
+
+            try {
+                bass = new BassBoost(0, sessionId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing BassBoost\n"+e);
+            }
+
+            try {
+                virt = new Virtualizer(0, sessionId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing Virtualizer\n"+e);
+            }
+
+            try {
+                wide = new StereoWide(0, sessionId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing StereoWide\n"+e);
+            }
+
+            mCompression = comp;
+            mEqualizer = eq;
+            mBassBoost = bass;
+            mVirtualizer = virt;
+            mStereoWide = wide;
         }
 
         protected void release() {
-            mCompression.release();
-            mEqualizer.release();
-            mBassBoost.release();
-            mVirtualizer.release();
-            mStereoWide.release();
+            if (mCompression != null)
+                mCompression.release();
+            if (mEqualizer != null)
+                mEqualizer.release();
+            if (mBassBoost != null)
+                mBassBoost.release();
+            if (mVirtualizer != null)
+                mVirtualizer.release();
+            if (mStereoWide != null)
+                mStereoWide.release();
         }
 
         /**
@@ -342,38 +381,48 @@ public class HeadsetService extends Service {
     }
 
     private void updateDsp(SharedPreferences preferences, EffectSet session) {
-        session.mCompression.setEnabled(preferences.getBoolean("dsp.compression.enable", false));
-        EffectSet.setParameter(session.mCompression, 0,
-                Short.valueOf(preferences.getString("dsp.compression.mode", "0")));
-
-        session.mBassBoost.setEnabled(preferences.getBoolean("dsp.bass.enable", false));
-        session.mBassBoost.setStrength(Short.valueOf(preferences.getString("dsp.bass.mode", "0")));
-        session.mBassBoost.setCenterFrequency(
-                Short.valueOf(preferences.getString("dsp.bass.freq", "55")));
-
-        /* Equalizer state is in a single string preference with all values separated by ; */
-        session.mEqualizer.setEnabled(preferences.getBoolean("dsp.tone.enable", false));
-        if (mOverriddenEqualizerLevels != null) {
-            for (short i = 0; i < mOverriddenEqualizerLevels.length; i++) {
-                session.mEqualizer.setBandLevel(i,
-                        (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
-            }
-        } else {
-            String[] levels = preferences.getString("dsp.tone.eq.custom", "0;0;0;0;0").split(";");
-            for (short i = 0; i < levels.length; i++) {
-                session.mEqualizer.setBandLevel(i,
-                        (short) Math.round(Float.valueOf(levels[i]) * 100));
-            }
+        if (session.mCompression != null) {
+            session.mCompression.setEnabled(preferences.getBoolean("dsp.compression.enable", false));
+            EffectSet.setParameter(session.mCompression, 0,
+                    Short.valueOf(preferences.getString("dsp.compression.mode", "0")));
         }
-        EffectSet.setParameter(session.mEqualizer, 1000,
-                Short.valueOf(preferences.getString("dsp.tone.loudness", "10000")));
 
-        session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
-        session.mVirtualizer.setStrength(
-                Short.valueOf(preferences.getString("dsp.headphone.mode", "0")));
+        if (session.mBassBoost != null) {
+            session.mBassBoost.setEnabled(preferences.getBoolean("dsp.bass.enable", false));
+            session.mBassBoost.setStrength(Short.valueOf(preferences.getString("dsp.bass.mode", "0")));
+            session.mBassBoost.setCenterFrequency(
+                    Short.valueOf(preferences.getString("dsp.bass.freq", "55")));
+        }
 
-        session.mStereoWide.setEnabled(preferences.getBoolean("dsp.stereowide.enable", false));
-        session.mStereoWide.setStrength(
-                Short.valueOf(preferences.getString("dsp.stereowide.mode", "0")));
+        if (session.mEqualizer != null) {
+            /* Equalizer state is in a single string preference with all values separated by ; */
+            session.mEqualizer.setEnabled(preferences.getBoolean("dsp.tone.enable", false));
+            if (mOverriddenEqualizerLevels != null) {
+                for (short i = 0; i < mOverriddenEqualizerLevels.length; i++) {
+                    session.mEqualizer.setBandLevel(i,
+                            (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
+                }
+            } else {
+                String[] levels = preferences.getString("dsp.tone.eq.custom", "0;0;0;0;0").split(";");
+                for (short i = 0; i < levels.length; i++) {
+                    session.mEqualizer.setBandLevel(i,
+                            (short) Math.round(Float.valueOf(levels[i]) * 100));
+                }
+            }
+            EffectSet.setParameter(session.mEqualizer, 1000,
+                    Short.valueOf(preferences.getString("dsp.tone.loudness", "10000")));
+        }
+
+        if (session.mVirtualizer != null) {
+            session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
+            session.mVirtualizer.setStrength(
+                    Short.valueOf(preferences.getString("dsp.headphone.mode", "0")));
+        }
+
+        if (session.mStereoWide != null) {
+            session.mStereoWide.setEnabled(preferences.getBoolean("dsp.stereowide.enable", false));
+            session.mStereoWide.setStrength(
+                    Short.valueOf(preferences.getString("dsp.stereowide.mode", "0")));
+        }
     }
 }
