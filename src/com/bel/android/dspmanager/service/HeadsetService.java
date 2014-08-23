@@ -1,6 +1,7 @@
 package com.bel.android.dspmanager.service;
 
 import android.app.Service;
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -258,11 +259,11 @@ public class HeadsetService extends Service {
             } else if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED)
                     || action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
                 mUseBluetooth = audioManager.isBluetoothA2dpOn();
+            } else if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
+                mUseBluetooth = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE,
+                        BluetoothA2dp.STATE_DISCONNECTED) == BluetoothA2dp.STATE_CONNECTED;
             } else if (action.equals(Intent.ACTION_ANALOG_AUDIO_DOCK_PLUG)) {
                 mUseUSB = intent.getIntExtra("state", 0) == 1;
-            } else if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                mUseBluetooth = audioManager.isBluetoothA2dpOn();
-                mUseHeadset = audioManager.isWiredHeadsetOn();
             }
 
             Log.i(TAG, "Headset=" + mUseHeadset + "; Bluetooth=" + mUseBluetooth +
@@ -289,7 +290,7 @@ public class HeadsetService extends Service {
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         intentFilter.addAction(Intent.ACTION_ANALOG_AUDIO_DOCK_PLUG);
-        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
         registerReceiver(mRoutingReceiver, intentFilter);
 
         registerReceiver(mPreferenceUpdateReceiver,
