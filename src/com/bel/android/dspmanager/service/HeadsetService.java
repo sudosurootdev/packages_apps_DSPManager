@@ -19,6 +19,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.bel.android.dspmanager.activity.DSPManager;
+import com.bel.android.dspmanager.activity.FxUtils;
+import com.bel.android.dspmanager.activity.FxUtils.FX;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,6 +73,10 @@ public class HeadsetService extends Service {
          * Session-specific stereo widener
          */
         private final StereoWide mStereoWide;
+        /**
+         * Session-specific dirac
+         */
+        public final DiracFX mDirac;
 
         protected EffectSet(int sessionId) {
             AudioEffect comp = null;
@@ -78,6 +84,7 @@ public class HeadsetService extends Service {
             BassBoost bass = null;
             Virtualizer virt = null;
             StereoWide wide = null;
+            DiracFX dirac = null;
 
             try {
                 /*
@@ -108,7 +115,11 @@ public class HeadsetService extends Service {
             } catch (Exception e) {
                 Log.e(TAG, "Error initializing Virtualizer\n"+e);
             }
-
+            try {
+                dirac = new DiracFX(0, sessionId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing DiracFX\n"+e);
+            }
             try {
                 wide = new StereoWide(0, sessionId);
             } catch (Exception e) {
@@ -120,6 +131,7 @@ public class HeadsetService extends Service {
             mBassBoost = bass;
             mVirtualizer = virt;
             mStereoWide = wide;
+            mDirac = dirac;
         }
 
         protected void release() {
@@ -133,6 +145,8 @@ public class HeadsetService extends Service {
                 mVirtualizer.release();
             if (mStereoWide != null)
                 mStereoWide.release();
+            if (mDirac != null)
+                mDirac.release();
         }
 
         /**
@@ -424,6 +438,15 @@ public class HeadsetService extends Service {
             session.mStereoWide.setEnabled(preferences.getBoolean("dsp.stereowide.enable", false));
             session.mStereoWide.setStrength(
                     Short.valueOf(preferences.getString("dsp.stereowide.mode", "0")));
+        }
+
+        if (FxUtils.isFxSupported(FX.Dirac)) {
+            try {
+                session.mDirac.setEnabled(preferences.getBoolean("dsp.dirac.enable", false));
+                session.mDirac.setFactorLevel(preferences.getInt("dsp.dirac.mode", 0));
+            } catch (Exception e) {
+                Log.e(TAG, "Error enabling dirac!", e);
+            }
         }
     }
 }

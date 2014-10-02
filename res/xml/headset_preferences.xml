@@ -3,7 +3,33 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/pref_dsp_title">
+        android:title="@string/pref_dirac_title"
+        android:key="dsp.dirac.category" >
+
+        <CheckBoxPreference
+            android:key="dsp.dirac.enable"
+            android:summaryOn="@string/pref_dirac_summary_on"
+            android:summaryOff="@string/pref_dirac_summary_off"
+            android:disableDependentsState="false"
+            android:title="@string/pref_dsp_enable" />
+
+        <SeekBarPreference
+            android:id="@+id/diracBar"
+            android:key="dsp.dirac.mode"
+            android:title="@string/pref_effect_title"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="26dp"
+            android:defaultValue="0"
+            android:max="2081"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_dsp_title"
+        android:key="dsp.compress.category" >
 
         <CheckBoxPreference
             android:key="dsp.compression.enable"

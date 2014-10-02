@@ -37,6 +37,8 @@ LOCAL_SHARED_LIBRARIES := \
 
 include $(BUILD_SHARED_LIBRARY)
 
+ifneq ($(TARGET_ENABLE_DIRAC_AUDIO),true)
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := audio_effects.conf
@@ -50,3 +52,5 @@ LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/etc
 
 include $(BUILD_PREBUILT)
+
+endif
