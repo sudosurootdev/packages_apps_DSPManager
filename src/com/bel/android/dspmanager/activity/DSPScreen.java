@@ -6,6 +6,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 
 import com.bel.android.dspmanager.R;
 import com.bel.android.dspmanager.preference.EqualizerPreference;
@@ -87,6 +88,10 @@ public final class DSPScreen extends PreferenceFragment {
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
+
+        /* go away if need be */
+        PreferenceScreen prefScreen = getPreferenceScreen();
+        FxUtils.checkAvailablePrefs(prefScreen, config);
 
         prefMgr.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
     }

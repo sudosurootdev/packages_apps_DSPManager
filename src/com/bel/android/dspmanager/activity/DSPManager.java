@@ -59,6 +59,9 @@ public final class DSPManager extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.top);
 
+        // if boot receiver didn't catch it yet, we will
+        FxUtils.init(this);
+
         pagerAdapter = new MyAdapter(getFragmentManager(), this);
         actionBar = getActionBar();
         viewPager = (ViewPager) findViewById(R.id.viewPager);

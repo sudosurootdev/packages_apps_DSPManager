@@ -22,6 +22,9 @@
     <string name="usb_title">USB/Dock</string>
     <string name="wm8994_title" translatable="false">WM8994</string>
     <string name="pref_unavailable">Functionality is not available on your device</string>
+    <string name="pref_dirac_title">Dirac HD</string>
+    <string name="pref_dirac_summary_on">Dirac HD is enabled</string>
+    <string name="pref_dirac_summary_off">Dirac HD is disabled</string>
     <string name="pref_dsp_title">Dynamic range compression</string>
     <string name="pref_dsp_summary_on">Compression is enabled</string>
     <string name="pref_dsp_summary_off">Compression is disabled</string>
