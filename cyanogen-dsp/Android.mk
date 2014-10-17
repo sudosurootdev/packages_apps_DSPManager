@@ -54,3 +54,6 @@ LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/etc
 include $(BUILD_PREBUILT)
 
 endif
+
+# Dirac?
+include $(call all-makefiles-under,$(LOCAL_PATH))
