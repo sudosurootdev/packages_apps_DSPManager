@@ -274,9 +274,17 @@ public class HeadsetService extends Service {
                     || action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
                 mUseBluetooth = audioManager.isBluetoothA2dpOn();
             } else if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
+<<<<<<< HEAD
                 mUseBluetooth = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE,
                         BluetoothA2dp.STATE_DISCONNECTED) == BluetoothA2dp.STATE_CONNECTED;
             } else if (action.equals(Intent.ACTION_ANALOG_AUDIO_DOCK_PLUG)) {
+=======
+                int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE,
+                        BluetoothA2dp.STATE_DISCONNECTED);
+                mUseBluetooth = state == BluetoothA2dp.STATE_CONNECTED;
+            } else if (action.equals(AudioManager.ACTION_ANALOG_AUDIO_DOCK_PLUG) ||
+                       action.equals(AudioManager.ACTION_DIGITAL_AUDIO_DOCK_PLUG)) {
+>>>>>>> cm
                 mUseUSB = intent.getIntExtra("state", 0) == 1;
             }
 
@@ -301,10 +309,17 @@ public class HeadsetService extends Service {
         registerReceiver(mAudioSessionReceiver, audioFilter);
 
         final IntentFilter intentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+<<<<<<< HEAD
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         intentFilter.addAction(Intent.ACTION_ANALOG_AUDIO_DOCK_PLUG);
         intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
+=======
+        intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
+        intentFilter.addAction(AudioManager.ACTION_ANALOG_AUDIO_DOCK_PLUG);
+        intentFilter.addAction(AudioManager.ACTION_DIGITAL_AUDIO_DOCK_PLUG);
+        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+>>>>>>> cm
         registerReceiver(mRoutingReceiver, intentFilter);
 
         registerReceiver(mPreferenceUpdateReceiver,
