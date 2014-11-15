@@ -12,7 +12,6 @@ import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
-import android.media.audiofx.StereoWide;
 import android.media.audiofx.Virtualizer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -70,10 +69,6 @@ public class HeadsetService extends Service {
          */
         private final Virtualizer mVirtualizer;
         /**
-         * Session-specific stereo widener
-         */
-        private final StereoWide mStereoWide;
-        /**
          * Session-specific dirac
          */
         public final DiracFX mDirac;
@@ -83,7 +78,6 @@ public class HeadsetService extends Service {
             Equalizer eq = null;
             BassBoost bass = null;
             Virtualizer virt = null;
-            StereoWide wide = null;
             DiracFX dirac = null;
 
             try {
@@ -120,17 +114,11 @@ public class HeadsetService extends Service {
             } catch (Exception e) {
                 Log.e(TAG, "Error initializing DiracFX\n"+e);
             }
-            try {
-                wide = new StereoWide(0, sessionId);
-            } catch (Exception e) {
-                Log.e(TAG, "Error initializing StereoWide\n"+e);
-            }
 
             mCompression = comp;
             mEqualizer = eq;
             mBassBoost = bass;
             mVirtualizer = virt;
-            mStereoWide = wide;
             mDirac = dirac;
         }
 
@@ -143,8 +131,6 @@ public class HeadsetService extends Service {
                 mBassBoost.release();
             if (mVirtualizer != null)
                 mVirtualizer.release();
-            if (mStereoWide != null)
-                mStereoWide.release();
             if (mDirac != null)
                 mDirac.release();
         }
@@ -434,12 +420,6 @@ public class HeadsetService extends Service {
             session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
             session.mVirtualizer.setStrength(
                     Short.valueOf(preferences.getString("dsp.headphone.mode", "0")));
-        }
-
-        if (session.mStereoWide != null) {
-            session.mStereoWide.setEnabled(preferences.getBoolean("dsp.stereowide.enable", false));
-            session.mStereoWide.setStrength(
-                    Short.valueOf(preferences.getString("dsp.stereowide.mode", "0")));
         }
 
         if (FxUtils.isFxSupported(FX.Dirac)) {

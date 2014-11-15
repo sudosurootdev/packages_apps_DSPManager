@@ -21,7 +21,6 @@ LOCAL_SRC_FILES := \
 	EffectCompression.cpp \
 	EffectEqualizer.cpp \
 	EffectVirtualizer.cpp \
-	EffectStereoWide.cpp \
 	FIR16.cpp \
 # terminator
 
